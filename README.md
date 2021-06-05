@@ -25,7 +25,6 @@ networkx=='2.5.1'
 
 ```
 $ p pathGeneration.py -filepath sample/0.txt -L 3 -N 3
-(Output)
 INFO:root:['A', 'C', 'D']
 INFO:root:['D', 'C', 'D']
 INFO:root:['D', 'C', 'D']
