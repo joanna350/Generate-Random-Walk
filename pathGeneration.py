@@ -17,9 +17,6 @@ def argParser():
 
     args = vars(parser.parse_args())
 
-    #sanity check
-    #logging.info(args)
-
     return args['filepath'], args['L'], args['N']
 
 
@@ -68,9 +65,6 @@ class Graph:
         for n in self.leaves:
             self.maxD[n] = 1
         self.findCycles()
-        # sanity check
-        #logging.info('leaves {}'.format(self.leaves))
-        #logging.info('adj graph {}'.format(self.adj))
 
     def processData(self, fp):
         '''
@@ -140,8 +134,6 @@ class Graph:
         self.updateInf()
         # ready to calculate depth in reverse from the leaves
         self.updateMaxD()
-        # sanity check
-        #logging.info(len(self.maxD.keys()) == len(self.all))
 
         # step 1
         orderbyD, ptr = self.randomWalk()
