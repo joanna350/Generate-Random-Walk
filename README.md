@@ -23,8 +23,4 @@ networkx=='2.5.1'
 
 #### To run:
 
-By running the command line
-
 ```python3 -filepath sample/0.txt -L 3 -N 3```
-
-it will recreate the example provided in hackerrank
