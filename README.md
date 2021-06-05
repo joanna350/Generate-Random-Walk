@@ -21,6 +21,12 @@ networkx=='2.5.1'
 - sample/*.txt : Folder with graph data following the format
 - pathGeneration.py : Main file to invoke with arguments
 
-#### To run:
+#### To run on command line
 
-```python3 -filepath sample/0.txt -L 3 -N 3```
+```
+$ p pathGeneration.py -filepath sample/0.txt -L 3 -N 3
+(Output)
+INFO:root:['A', 'C', 'D']
+INFO:root:['D', 'C', 'D']
+INFO:root:['D', 'C', 'D']
+```
