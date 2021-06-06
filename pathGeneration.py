@@ -216,7 +216,7 @@ class Graph:
                             self.maxD[node] = self.maxD[n]+1 # update based on prev node
                             newVisit.add(node)
 
-    def SCCUtil(self, u, minToD, discovered, stackM, stack):
+    def detectCycleUtil(self, u, minToD, discovered, stackM, stack):
         '''
         utility function for detecting scc
         intermediary datastructures for recursive call are as follows
@@ -234,7 +234,7 @@ class Graph:
         if u in self.adj:
             for v in self.adj[u]:
                 if discovered[v] == -1:
-                    self.SCCUtil(v, minToD, discovered, stackM, stack)
+                    self.detectCycleUtil(v, minToD, discovered, stackM, stack)
                     minToD[u] = min(minToD[u], minToD[v])
                 elif stackM[v] == True:
                     minToD[u] = min(minToD[u], discovered[v])
@@ -250,7 +250,7 @@ class Graph:
                     self.maxD[n] = float('inf')
                 self.cycle = self.cycle.union(set(cc))
     # dfs tree
-    def SCC(self):
+    def detectCycle(self):
         '''
         Tarjan algorithm
         detects nodes in cycle, update self.cycle and self.maxD accordingly
@@ -265,7 +265,7 @@ class Graph:
         stack = []
         for n in self.all:
             if disc[n] == -1:
-                self.SCCUtil(n, low, disc, stackM, stack)
+                self.detectCycleUtil(n, low, disc, stackM, stack)
 
 if __name__ == '__main__':
 
@@ -273,7 +273,7 @@ if __name__ == '__main__':
     fp, L, N = argParser()
     start = time.time()
     g = Graph(fp, L, N)
-    g.SCC()
+    g.detectCycle()
     output = g.generatePath()
     end = time.time()
     print('time taken: {}'.format(end -start))
