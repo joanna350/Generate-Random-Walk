@@ -2,7 +2,7 @@ from random import choice
 import pathlib
 import logging
 import argparse
-import networkx as nx
+import time
 
 
 def argParser():
@@ -54,7 +54,7 @@ class Graph:
         self.L = L
         self.N = N
         # prepare datastructures
-        self.all, self.leaves, self.radj, self.adj, self.edges = self.processData(fp)
+        self.all, self.leaves, self.radj, self.adj = self.processData(fp)
         # for dfs tree to identify strongly connected components (SCC)
         self.V = len(self.all)
         self.Time = 0
@@ -64,7 +64,6 @@ class Graph:
         # primary initialization of depth per node
         for n in self.leaves:
             self.maxD[n] = 1
-        self.findCycles()
 
     def processData(self, fp):
         '''
@@ -82,7 +81,6 @@ class Graph:
         # initialise placeholder
         adj, radj = dict(), dict()
         ind, outd = set(), set()
-        _edges = []
         for e in edges:
             o, i = e.split(' -> ')
             if o not in adj:
@@ -95,28 +93,11 @@ class Graph:
                 radj[i].append(o)
             ind.add(i)
             outd.add(o)
-            _edges.append([o, i])
 
         # Find the set of nodes with no outgoing degree
         all = ind.union(outd)
         leaves = all - outd
-        return all, leaves, radj, adj, _edges
-
-    def findCycles(self):
-        '''
-        utility function to update self.cycle data structure with strongly connected components
-        '''
-        tg = nx.DiGraph(self.edges)
-        try:
-            cycles = nx.find_cycle(tg, orientation='original')
-            for unpack in cycles:
-                o, i, _ = unpack
-                self.cycle.add(o)
-                self.cycle.add(i)
-                self.maxD[o] = float('inf')
-                self.maxD[i] = float('inf')
-        except:
-            pass
+        return all, leaves, radj, adj
 
     def generatePath(self):
         '''
@@ -235,15 +216,67 @@ class Graph:
                             self.maxD[node] = self.maxD[n]+1 # update based on prev node
                             newVisit.add(node)
 
+    def SCCUtil(self, u, minToD, discovered, stackM, stack):
+        '''
+        utility function for detecting scc
+        intermediary datastructures for recursive call are as follows
+        :param Str u: node yet to be discovered
+        :param dict() minToD: minimum time to discovery
+        :param dict() discovered: primary discovery time
+        :param dict() stackM: stack membership
+        :param List stack: datastructure to check each subtree connection with the current node as root
+        '''
+        discovered[u] = self.Time
+        minToD[u] = self.Time
+        self.Time += 1
+        stackM[u] = True
+        stack.append(u)
+        if u in self.adj:
+            for v in self.adj[u]:
+                if discovered[v] == -1:
+                    self.SCCUtil(v, minToD, discovered, stackM, stack)
+                    minToD[u] = min(minToD[u], minToD[v])
+                elif stackM[v] == True:
+                    minToD[u] = min(minToD[u], discovered[v])
+        w = -1
+        if minToD[u] == discovered[u]:
+            cc = []
+            while w != u:
+                w = stack.pop()
+                cc.append(w)
+                stackM[w] = False
+            if len(cc) >  1:
+                for n in cc:
+                    self.maxD[n] = float('inf')
+                self.cycle = self.cycle.union(set(cc))
+    # dfs tree
+    def SCC(self):
+        '''
+        Tarjan algorithm
+        detects nodes in cycle, update self.cycle and self.maxD accordingly
+        '''
+        disc = {}
+        low = {}
+        stackM ={}
+        for n in self.all:
+            disc[n] = -1
+            low[n] = -1
+            stackM[n] = -1
+        stack = []
+        for n in self.all:
+            if disc[n] == -1:
+                self.SCCUtil(n, low, disc, stackM, stack)
 
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
     fp, L, N = argParser()
-
+    start = time.time()
     g = Graph(fp, L, N)
+    g.SCC()
     output = g.generatePath()
-
+    end = time.time()
+    print('time taken: {}'.format(end -start))
     # format
     for o in output:
         logging.info(o)
