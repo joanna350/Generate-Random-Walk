@@ -1,4 +1,4 @@
-## GraphCore
+#### Generate Random Walk
 
 #### Environment
 ```
@@ -24,7 +24,7 @@ networkx=='2.5.1'
 #### To run on command line
 
 ```
-$ p pathGeneration.py -filepath sample/0.txt -L 3 -N 3
+$ python3 pathGeneration.py -filepath sample/0.txt -L 3 -N 3
 INFO:root:['A', 'C', 'D']
 INFO:root:['D', 'C', 'D']
 INFO:root:['D', 'C', 'D']
