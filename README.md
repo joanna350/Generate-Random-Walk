@@ -1,4 +1,4 @@
-#### Generate Random Walk
+### Generate Random Walk
 - given a graph in the format of the files under the folder sample/, returns possible random walks
 - Tarjan algorithm utilised for efficiency over existing modules
 
