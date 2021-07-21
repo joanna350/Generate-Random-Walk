@@ -1,5 +1,6 @@
 ### Generate Random Walk
 - given a graph in the format of the files under the folder sample/, returns possible random walks
+- length and number of random walks are read in from stdin as user input through argparser
 - Tarjan algorithm utilised for efficiency over existing modules
 
 #### Environment
